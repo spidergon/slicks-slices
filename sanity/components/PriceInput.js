@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import PatchEvent, { set, unset } from 'part:@sanity/form-builder/patch-event';
 import FormField from 'part:@sanity/components/formfields/default';
 
@@ -21,18 +22,20 @@ export default function PriceInput({
   inputComponent,
   markers,
 }) {
-  console.log(markers);
-  const title = `${type.title} - ${formatMoney(value)}`;
+  const { name, title, description } = type;
+  const id = `price-input-${title}`;
 
   return (
     <div>
-      {/* <h2>
-        {type.title} - {formatMoney(value)}
-      </h2>
-      <p>{type.description}</p> */}
-      <FormField label={title} description={type.description}>
+      <FormField
+        labelFor={id}
+        label={`${title} - ${formatMoney(value)}`}
+        description={description}
+        markers={markers}
+      >
         <input
-          type={type.name}
+          id={id}
+          type={name}
           value={value}
           onChange={(event) => onChange(createPatchFrom(event.target.value))}
           ref={inputComponent}
@@ -44,4 +47,16 @@ export default function PriceInput({
 
 PriceInput.focus = function () {
   this._inputElement.focus();
+};
+
+PriceInput.propTypes = {
+  type: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+  }).isRequired,
+  value: PropTypes.number,
+  onChange: PropTypes.func.isRequired,
+  inputComponent: PropTypes.object,
+  markers: PropTypes.array,
 };
