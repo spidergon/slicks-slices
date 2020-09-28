@@ -29,7 +29,6 @@ export default function SinglePizzaPage({ data: { pizza } }) {
 export const query = graphql`
   query($slug: String!) {
     pizza: sanityPizza(slug: { current: { eq: $slug } }) {
-      id
       name
       image {
         asset {
@@ -41,7 +40,6 @@ export const query = graphql`
       toppings {
         id
         name
-        vegetarian
       }
     }
   }
