@@ -116,7 +116,6 @@ async function turnSlicemastersIntoPages({ graphql, actions }) {
     actions.createPage({
       path: `/slicemasters/${i + 1}`,
       component: path.resolve('./src/pages/slicemasters.js'),
-      // This data is pass to the template when we create it
       context: {
         skip: i * pageSize,
         currentPage: i + 1,
