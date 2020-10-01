@@ -1,4 +1,4 @@
-import path from 'path';
+import path, { resolve } from 'path';
 import fetch from 'isomorphic-fetch';
 
 async function fetchBeersAndTurnIntoNodes({
@@ -103,16 +103,25 @@ async function turnSlicemastersIntoPages({ graphql, actions }) {
       }
     }
   `);
-  // TODO: 2. Turn each slicemaster into their own page
+  // 2. Turn each slicemaster into their own page
+  data.slicemasters.nodes.forEach(({ slug }) => {
+    actions.createPage({
+      path: `/slicemaster/${slug.current}`,
+      component: resolve('./src/templates/Slicemaster.js'),
+      context: {
+        slug: slug.current,
+      },
+    });
+  });
   // 3. Figure out how many pages there are based on how many slicemasters there are, and how many per page!
   const pageSize = parseInt(process.env.GATSBY_PAGE_SIZE);
   const pageCount = Math.ceil(data.slicemasters.totalCount / pageSize);
-  console.log(
-    `Thera are ${data.slicemasters.totalCount} total people. And we have ${pageCount} pages with ${pageSize} per page`
-  );
+  // console.log(
+  //   `Thera are ${data.slicemasters.totalCount} total people. And we have ${pageCount} pages with ${pageSize} per page`
+  // );
   // 4. Loop from 1 to n (number of pages) and create the pages for them
   Array.from({ length: pageCount }).forEach((_, i) => {
-    console.log(`Creating page ${i}`);
+    // console.log(`Creating page ${i}`);
     actions.createPage({
       path: `/slicemasters/${i + 1}`,
       component: path.resolve('./src/pages/slicemasters.js'),
