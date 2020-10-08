@@ -33,14 +33,21 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// function wait(ms = 0) {
+//   return new Promise((resolve, reject) => {
+//     setTimeout(resolve, ms);
+//   });
+// }
+
 exports.handler = async (event, context) => {
+  // await wait(5000);
   const body = JSON.parse(event.body);
   // Validate the data coming in is correct
   const requiredFields = ['email', 'name', 'order'];
 
   for (const field of requiredFields) {
     console.log(`Checking that ${field} is good`);
-    if (!body[field]) {
+    if (!body[field] /* || (field === 'order' && !body.order.length) */) {
       return {
         statusCode: 400,
         body: JSON.stringify({
@@ -50,13 +57,25 @@ exports.handler = async (event, context) => {
     }
   }
 
+  // Make sure they actually have items in that order
+  if (!body.order.length) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        message: `Why would you order nothing?!`,
+      }),
+    };
+  }
+
   // Send the email
   const info = await transporter.sendMail({
     from: 'Slicks Slices <slick@example.com>',
     to: `${body.name} <${body.email}>, orders@example.com`,
-    subject: 'New order!',
+    subject: '🍕 New order!',
     html: generateOrderEmail({ order: body.order, total: body.total }),
   });
+
+  console.log(info);
 
   return {
     statusCode: 200,
