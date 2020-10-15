@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env' });
 
 export default {
+  // pathPrefix: '/pizza', // for hosting on own server : npm run build -- --prefix-paths
   siteMetadata: {
     title: `Slicks Slices`,
     siteUrl: `https://gatsby.pizza`,
